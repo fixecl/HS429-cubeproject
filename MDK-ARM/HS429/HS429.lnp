@@ -2,7 +2,6 @@
 "hs429\startup_stm32f429xx.o"
 "hs429\bsp_driver_flash.o"
 "hs429\extmem.o"
-"hs429\image1.o"
 "hs429\touch.o"
 "hs429\main.o"
 "hs429\gpio.o"

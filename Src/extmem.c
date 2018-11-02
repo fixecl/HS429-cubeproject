@@ -3,8 +3,10 @@
 #include "usart.h"
 
 //memalloc
-memTable SDRAM_MM_Table;
+exmemTable SDRAM_EXMM_Table;
 
+//__align(32) u8 ccmMemBase[60*1024] __attribute__((at(0X10000000)));
+//byte inMemBase[120*1024];
 
 FMC_SDRAM_CommandTypeDef Command;
 uint8_t isSequenceInited=0;
@@ -111,37 +113,37 @@ void SDRAM_Test(void)
 }
 
 
-void mmallocInit(void )
+void exmmallocInit(void )
 {
     SDRAM_Initialization_sequence();
     
     int i;
-    SDRAM_MM_Table.memRate=0;
-    SDRAM_MM_Table.usedBlockNums=0;
-    for(i=0;i<MM_BLOCK_NUM;i++)
+    SDRAM_EXMM_Table.memRate=0;
+    SDRAM_EXMM_Table.usedBlockNums=0;
+    for(i=0;i<EXMM_BLOCK_NUM;i++)
     {
-        SDRAM_MM_Table.memStateTable[i]=MM_MEMSTATE_AVAILABLE;
+        SDRAM_EXMM_Table.memStateTable[i]=EXMM_MEMSTATE_AVAILABLE;
     }
 }
 
-void *mmalloc(u16 size)
+void *exmmalloc(u32 size)
 {
     u8 *p;
-    p=(u8 *) MM_START_ARRD;
-    u16 sp=0,fp=0;   
+    p=(u8 *) EXMM_START_ARRD;
+    u32 sp=0,fp=0;   
     //计算所需块数量
-    u16 blockNum;
-    blockNum=size/MM_BLOCK_SIZE+1;
+    u32 blockNum;
+    blockNum=(size+EXMM_BLOCK_SIZE-1)/EXMM_BLOCK_SIZE;
     
     //块数量不够则返回
-    if(blockNum> MM_BLOCK_NUM-SDRAM_MM_Table.usedBlockNums )
+    if(blockNum> EXMM_BLOCK_NUM-SDRAM_EXMM_Table.usedBlockNums )
     {
         return NULL;
     }
     
     for(;;)
     {
-        if(SDRAM_MM_Table.memStateTable[fp]==MM_MEMSTATE_AVAILABLE)
+        if(SDRAM_EXMM_Table.memStateTable[fp]==EXMM_MEMSTATE_AVAILABLE)
         {
             if(fp-sp+1 > 254)
                 return NULL;
@@ -149,41 +151,44 @@ void *mmalloc(u16 size)
             if(fp-sp+1 == blockNum)
             {
                 //分配成功
-                SDRAM_MM_Table.usedBlockNums+=blockNum;
-                SDRAM_MM_Table.memRate=SDRAM_MM_Table.usedBlockNums / MM_BLOCK_NUM;
+                SDRAM_EXMM_Table.usedBlockNums+=blockNum;
+                SDRAM_EXMM_Table.memRate=SDRAM_EXMM_Table.usedBlockNums *100 / EXMM_BLOCK_NUM;
                 for(int i=sp;i<=fp;i++)
                 {
-                    SDRAM_MM_Table.memStateTable[i]=blockNum;
+                    SDRAM_EXMM_Table.memStateTable[i]=blockNum;
                 }
                 
-                return p+sp*MM_BLOCK_SIZE;
+                return p+sp*EXMM_BLOCK_SIZE;
             }
-            fp++;  //可优化  fp+=blockNum;
+            fp++;  
         }
         else
         {
-            fp++;
+            fp+= SDRAM_EXMM_Table.memStateTable[fp];
             sp=fp;
         }
-        if(fp>=MM_BLOCK_NUM) 
+        if(fp>=EXMM_BLOCK_NUM) 
             return NULL;
     }
     
 }
 
-void mfree(void *ptr)
+void exmfree(void *ptr)
 {
-    u16 sp;
-    u16 blockNum;
-    sp=((u32)ptr-MM_START_ARRD)/MM_BLOCK_SIZE;
-    blockNum=SDRAM_MM_Table.memStateTable[sp];
+    u32 sp;
+    u32 blockNum;
+    
+    if(ptr == NULL) return;
+    
+    sp=((u32)ptr-EXMM_START_ARRD)/EXMM_BLOCK_SIZE;
+    blockNum=SDRAM_EXMM_Table.memStateTable[sp];
     
     //更新表
-    SDRAM_MM_Table.usedBlockNums -= blockNum;
-    SDRAM_MM_Table.memRate=SDRAM_MM_Table.usedBlockNums / MM_BLOCK_NUM;
+    SDRAM_EXMM_Table.usedBlockNums -= blockNum;
+    SDRAM_EXMM_Table.memRate=SDRAM_EXMM_Table.usedBlockNums *100 / EXMM_BLOCK_NUM;
     for(int i=0;i<blockNum;i++)
     {
-        SDRAM_MM_Table.memStateTable[i+sp]=MM_MEMSTATE_AVAILABLE;
+        SDRAM_EXMM_Table.memStateTable[i+sp]=EXMM_MEMSTATE_AVAILABLE;
     }
     
     

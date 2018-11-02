@@ -26,27 +26,27 @@
 #define SDRAM_SIZE         ((uint32_t)0x01000000U) 
 #define SDRAM_BANK_ENDARRD ((uint32_t)0xD1000000U)
 
-#define MM_START_ARRD  ((uint32_t)0xD0000000U) 
-#define MM_END_ARRD    ((uint32_t)0xD0D00000U) 
-#define MM_SIZE        ((uint32_t)0x00D00000U) 
-#define MM_BLOCK_SIZE  ((uint32_t)0x00001000U)  //4KB
-#define MM_BLOCK_NUM   ((uint32_t)0x00000D00U)  //修改后需要计算 3328个
+#define EXMM_START_ARRD  ((uint32_t)0xD0000000U) 
+#define EXMM_END_ARRD    ((uint32_t)0xD0D00000U) 
+#define EXMM_SIZE        ((uint32_t)0x00D00000U) 
+#define EXMM_BLOCK_SIZE  ((uint32_t)0x00001000U)  //4KB
+#define EXMM_BLOCK_NUM   ((uint32_t)0x00000D00U)  //修改后需要计算 3328个
 
-#define MM_MEMSTATE_AVAILABLE  0
+#define EXMM_MEMSTATE_AVAILABLE  0
 
-typedef struct MM_TABLE{
+typedef struct EXMM_TABLE{
     u8 memRate;
-    u8 memStateTable[MM_BLOCK_NUM];
+    u8 memStateTable[EXMM_BLOCK_NUM];
     u16 usedBlockNums;
-} memTable;
+} exmemTable;
 
 
 void SDRAM_Initialization_sequence(void);
 void SDRAM_Test(void);
 
-void mmallocInit(void );
-void *mmalloc(u16 size);
-void mfree(void *ptr);
+void exmmallocInit(void );
+void *exmmalloc(u32 size);
+void exmfree(void *ptr);
 
 #ifdef __cplusplus
 }

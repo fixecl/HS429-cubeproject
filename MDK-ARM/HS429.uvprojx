@@ -437,11 +437,6 @@
               <FilePath>..\Src\extmem.c</FilePath>
             </File>
             <File>
-              <FileName>image1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\image1.c</FilePath>
-            </File>
-            <File>
               <FileName>touch.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\touch.c</FilePath>

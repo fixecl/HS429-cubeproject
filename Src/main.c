@@ -88,7 +88,11 @@ void MX_FREERTOS_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+int fputc(int ch, FILE* stream)
+{
+    UART1_PrintChar((uint8_t)ch);
+    return ch;
+}
 /* USER CODE END 0 */
 
 /**
