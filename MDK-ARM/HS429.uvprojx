@@ -432,6 +432,11 @@
               <FilePath>..\Src\bsp_driver_flash.c</FilePath>
             </File>
             <File>
+              <FileName>mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\mem.c</FilePath>
+            </File>
+            <File>
               <FileName>extmem.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\extmem.c</FilePath>

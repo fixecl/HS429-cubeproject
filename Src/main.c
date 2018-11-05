@@ -65,7 +65,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "bsp_driver_flash.h"
-#include "extmem.h"
+#include "mem.h"
 #include "touch.h"
 //#include "image1.h"
 /* USER CODE END Includes */
