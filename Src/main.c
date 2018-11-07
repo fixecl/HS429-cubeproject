@@ -52,22 +52,20 @@
 #include "cmsis_os.h"
 #include "crc.h"
 #include "dma.h"
-#include "dma2d.h"
 #include "fatfs.h"
-#include "ltdc.h"
+#include "rng.h"
 #include "rtc.h"
 #include "sdio.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "fmc.h"
 
 /* USER CODE BEGIN Includes */
 #include "bsp_driver_flash.h"
 #include "mem.h"
 #include "touch.h"
-//#include "image1.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -81,6 +79,9 @@ extern uint8_t uartRevValue;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
+extern void GRAPHICS_HW_Init(void);
+extern void GRAPHICS_Init(void);
+extern void GRAPHICS_MainTask(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -131,43 +132,27 @@ int main(void)
   MX_CRC_Init();
   MX_SPI1_Init();
   MX_TIM4_Init();
-  MX_DMA2D_Init();
-  MX_FMC_Init();
-  MX_LTDC_Init();
+  MX_RNG_Init();
   /* USER CODE BEGIN 2 */
     //附加启动
     HAL_UART_Receive_IT(&huart1, &uartRevValue, 1);
     UART1_PrintLn("UART1 Open...");
     TOUCH_Init();   //初始化触摸屏
     HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);  //40%亮度
-
+    
     //用户代码
     HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
-
+    mallocInit();
     
-    u16 *p;
-    p=(u16 *)0xD0D00000;
-    for(u32 i=0; i<800*480; i++)
-    {
-        *p=0x000f;
-        p++;
-    }
-    p=(u16 *)0xD0D00000;
-    for(u16 j=0; j<480; j++)
-    {
-        for(u32 i=0; i<800; i++)
-        {
-
-            if(j==0) *p=0xf000;
-            if(j==479) *p=0x0ff0;
-            p++;
-        }
-    }
-    UART1_PrintDataLn("VRAm end:",(u32)p);
-
     
   /* USER CODE END 2 */
 
+/* Initialise the graphical hardware */
+  GRAPHICS_HW_Init();
+
+  /* Initialise the graphical stack engine */
+  GRAPHICS_Init();
+      
   /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
 
@@ -178,14 +163,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    while (1)
-    {
+  while (1)
+  {
 
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
 
-    }
+  }
   /* USER CODE END 3 */
 
 }

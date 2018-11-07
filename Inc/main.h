@@ -54,6 +54,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
+#include "stm32f4xx_hal.h"
+#include "GUI.h"
+#include "HW_Init.h"
+#include "GUI_App.h"
+#include "STemwin_wrapper.h"
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */

@@ -7,8 +7,8 @@
 smemTable SRAM_MM_Table;
 cmemTable CRAM_MM_Table;
 
-__align(32) u8 ccmMemBase[60*1024] __attribute__((at(0X10000000)));
-byte inMemBase[120*1024];
+__align(32) u8 ccmMemBase[CMM_SIZE] __attribute__((at(0X10000000)));
+byte inMemBase[SMM_SIZE];
 
 
 

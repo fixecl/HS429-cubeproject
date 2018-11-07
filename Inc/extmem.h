@@ -41,8 +41,8 @@ typedef struct EXMM_TABLE{
 } exmemTable;
 
 
-void SDRAM_Initialization_sequence(void);
-void SDRAM_Test(void);
+//void SDRAM_Initialization_sequence(void);
+//void SDRAM_Test(void);
 
 void exmmallocInit(void );
 void *exmmalloc(u32 size);

@@ -13,8 +13,8 @@
 #define MM_MEMSTATE_AVAILABLE  0
      
 //SRAM
-#define SMM_SIZE        ((uint32_t)120*1024)  //120KB
-#define SMM_BLOCK_NUM   ((uint32_t)0x000000F0U)  //修改后需要计算 240个
+#define SMM_SIZE        ((uint32_t)40*1024)  //40KB 
+#define SMM_BLOCK_NUM   ((uint32_t)80)  //修改后需要计算 80个
 
 typedef struct SMM_TABLE{
     u8 memRate;
@@ -24,7 +24,7 @@ typedef struct SMM_TABLE{
 
 //CCMRAM
 #define CMM_SIZE        ((uint32_t)60*1024)  //60KB
-#define CMM_BLOCK_NUM   ((uint32_t)0x00000078U)  //修改后需要计算 120个
+#define CMM_BLOCK_NUM   ((uint32_t)120)  //修改后需要计算 120个
 
 typedef struct CMM_TABLE{
     u8 memRate;
